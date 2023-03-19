@@ -106,7 +106,14 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
-      
+    
+    - name: Package OpenWrt Firmware
+      uses: ophub/flippy-openwrt-actions@main
+      env:
+        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
+        PACKAGE_SOC: s905d
+        KERNEL_VERSION_NAME: 6.1.10_5.15.50
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
     
 
     - name: Upload bin directory
@@ -157,14 +164,6 @@ jobs:
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "::set-output name=status::success"
-        
-    - name: Package OpenWrt Firmware
-      uses: ophub/flippy-openwrt-actions@main
-      env:
-        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
-        PACKAGE_SOC: s905d
-        KERNEL_VERSION_NAME: 6.1.10_5.15.50
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
